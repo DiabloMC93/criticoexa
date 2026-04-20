@@ -1,298 +1,373 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test UCI & Emergencias</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCI & Emergencias - Dark Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-light: rgba(59, 130, 246, 0.1);
+            --success: #10b981;
+            --error: #f43f5e;
+            --bg: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --border: #334155;
+            --opt-hover: #2d3a4f;
+        }
 
-body {
-  background: #111318;
-  color: #e2e4ec;
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-header {
-  background: #181b24;
-  border-bottom: 1px solid #252836;
-  padding: 0 24px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
 
-.header-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7094;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-}
+        /* Header Estilizado */
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-.stats-row {
-  display: flex;
-  gap: 6px;
-}
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.stat-badge {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  border-radius: 8px;
-  padding: 5px 14px;
-  font-size: 13px;
-  font-weight: 500;
-}
+        .brand-icon {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
 
-.badge-q   { background: #1e2130; color: #7b82ab; border: 1px solid #2a2f42; }
-.badge-ok  { background: #0e2318; color: #34d07a; border: 1px solid #1a3d2a; }
-.badge-err { background: #22110f; color: #f26c67; border: 1px solid #3d1e1c; }
+        .header-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-.progress-track { height: 3px; background: #1e2130; }
-.progress-fill {
-  height: 3px;
-  background: #4f7df5;
-  transition: width .4s ease;
-  width: 0%;
-}
+        .stats-row {
+            display: flex;
+            gap: 8px;
+        }
 
-main {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 32px 20px 64px;
-}
+        .stat-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+        }
 
-.q-card {
-  background: #181b24;
-  border: 1px solid #252836;
-  border-radius: 16px;
-  padding: 28px 28px 24px;
-  animation: rise .25s ease;
-}
-@keyframes rise {
-  from { opacity:0; transform: translateY(10px); }
-  to   { opacity:1; transform: translateY(0); }
-}
+        .badge-q   { color: var(--primary); }
+        .badge-ok  { color: var(--success); }
+        .badge-err { color: var(--error); }
 
-.q-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-.q-counter { font-size: 12px; font-weight: 600; color: #4f7df5; letter-spacing: .5px; }
-.q-fraction { color: #3d4460; }
+        /* Barra de Progreso */
+        .progress-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--border);
+            z-index: 99;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--primary);
+        }
 
-.q-text {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.65;
-  color: #dde0f0;
-  margin-bottom: 22px;
-}
+        main {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px 80px;
+            width: 100%;
+        }
 
-.options { display: flex; flex-direction: column; gap: 8px; }
+        /* Tarjeta de Pregunta */
+        .q-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.4s ease-out;
+        }
 
-.opt {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: #1c1f2c;
-  border: 1px solid #252836;
-  border-radius: 10px;
-  padding: 13px 16px;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  transition: background .12s, border-color .12s;
-}
-.opt:hover:not(:disabled) {
-  background: #222638;
-  border-color: #323759;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.opt-letter {
-  width: 24px; height: 24px;
-  border-radius: 6px;
-  background: #252836;
-  border: 1px solid #32374d;
-  font-size: 11px;
-  font-weight: 600;
-  color: #6b70a0;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all .12s;
-}
-.opt-text {
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: #9094b8;
-  padding-top: 3px;
-}
+        .q-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .q-badge {
+            background: var(--bg);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border);
+        }
 
-.opt.correct { background: #0c2018; border-color: #25a05a; }
-.opt.correct .opt-letter { background: #25a05a; border-color: #25a05a; color: #fff; }
-.opt.correct .opt-text { color: #4cd98a; }
+        .q-text {
+            font-size: 19px;
+            font-weight: 600;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 32px;
+        }
 
-.opt.wrong { background: #200d0c; border-color: #c0403b; }
-.opt.wrong .opt-letter { background: #c0403b; border-color: #c0403b; color: #fff; }
-.opt.wrong .opt-text { color: #f07b78; }
+        /* Opciones */
+        .options { display: flex; flex-direction: column; gap: 12px; }
 
-.opt.show-correct { background: #0c2018; border-color: #25a05a; opacity: .65; }
-.opt.show-correct .opt-letter { background: #25a05a; border-color: #25a05a; color: #fff; }
-.opt.show-correct .opt-text { color: #4cd98a; }
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(15, 23, 42, 0.3);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
 
-.feedback {
-  margin-top: 14px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  display: none;
-}
-.feedback.show { display: block; }
-.feedback.ok  { background: #0c2018; border: 1px solid #1e6640; color: #3ec97a; }
-.feedback.err { background: #200d0c; border: 1px solid #6b2320; color: #e87774; }
+        .opt:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: var(--opt-hover);
+            transform: translateX(6px);
+        }
 
-.btn-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+        .opt-letter {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: var(--border);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
 
-.btn-next {
-  background: #4f7df5;
-  color: #fff;
-  border: none;
-  border-radius: 9px;
-  padding: 10px 22px;
-  font-family: 'Inter', sans-serif;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  display: none;
-  transition: background .15s, transform .1s;
-}
-.btn-next.show { display: block; }
-.btn-next:hover { background: #3b68dc; }
-.btn-next:active { transform: scale(.97); }
+        .opt-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
 
-#results { display: none; }
-#results.show { display: block; animation: rise .3s ease; }
+        /* Estados de respuesta */
+        .opt.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .opt.correct .opt-letter { background: var(--success); color: white; }
+        
+        .opt.wrong { border-color: var(--error); background: rgba(244, 63, 94, 0.1); }
+        .opt.wrong .opt-letter { background: var(--error); color: white; }
 
-.results-card {
-  background: #181b24;
-  border: 1px solid #252836;
-  border-radius: 20px;
-  padding: 48px 32px 40px;
-  text-align: center;
-}
+        .opt.show-correct { border-color: var(--success); border-style: dashed; }
 
-.res-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #3d4460;
-  margin-bottom: 12px;
-}
-.res-score {
-  font-size: 72px;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-.res-msg {
-  font-size: 14px;
-  color: #6b7094;
-  margin-bottom: 36px;
-}
+        /* Feedback */
+        .feedback {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        .feedback.show { display: block; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        .feedback.ok  { background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+        .feedback.err { background: rgba(244, 63, 94, 0.15); color: #fb7185; border-color: rgba(244, 63, 94, 0.3); }
 
-.res-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  max-width: 380px;
-  margin: 0 auto 36px;
-}
-.res-box {
-  background: #1c1f2c;
-  border: 1px solid #252836;
-  border-radius: 10px;
-  padding: 16px 12px;
-}
-.res-box .rv { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-.res-box .rl { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #4a4f6e; }
-.res-box.blue .rv { color: #4f7df5; }
-.res-box.green .rv { color: #34d07a; }
-.res-box.red .rv { color: #f26c67; }
+        .btn-row { 
+            display: flex; 
+            justify-content: center; 
+            margin-top: 32px; 
+        }
 
-.btn-restart {
-  background: #4f7df5;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 36px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background .15s;
-}
-.btn-restart:hover { background: #3b68dc; }
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 40px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.4);
+        }
+        .btn-next.show { display: block; }
+        .btn-next:hover { background: #2563eb; transform: translateY(-2px); }
 
-#quiz.hidden { display: none; }
-</style>
+        /* Pantalla de Resultados */
+        #results { display: none; }
+        #results.show { display: block; }
+
+        .results-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .res-score {
+            font-size: 84px;
+            font-weight: 800;
+            margin: 20px 0;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .res-msg {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .res-box {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        .res-box .rv { font-size: 28px; font-weight: 800; display: block; }
+        .res-box .rl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        .btn-restart {
+            background: var(--text-main);
+            color: var(--bg);
+            border: none;
+            border-radius: 12px;
+            padding: 16px 48px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #quiz.hidden { display: none; }
+
+        @media (max-width: 600px) {
+            main { padding: 10px; margin-top: 20px; }
+            .q-card { padding: 24px; border-radius: 20px; }
+            .res-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
 <header>
-  <span class="header-title">UCI &amp; Emergencias</span>
-  <div class="stats-row">
-    <div class="stat-badge badge-q">
-      <span id="c-q">0</span><span style="color:#3d4460">/25</span>
+    <div class="header-brand">
+        <div class="brand-icon">+</div>
+        <span class="header-title">UCI &amp; Emergencias</span>
     </div>
-    <div class="stat-badge badge-ok">&#10003; <span id="c-ok">0</span></div>
-    <div class="stat-badge badge-err">&#10007; <span id="c-err">0</span></div>
-  </div>
+    <div class="stats-row">
+        <div class="stat-badge badge-q"><span id="c-q">0</span>/25</div>
+        <div class="stat-badge badge-ok">✓ <span id="c-ok">0</span></div>
+        <div class="stat-badge badge-err">✕ <span id="c-err">0</span></div>
+    </div>
 </header>
 
-<div class="progress-track">
-  <div class="progress-fill" id="prog"></div>
+<div class="progress-container">
+    <div class="progress-fill" id="prog"></div>
 </div>
 
 <main>
-  <div id="quiz">
-    <div class="q-card" id="qcard">
-      <div class="q-meta">
-        <span class="q-counter" id="q-num">PREGUNTA 1</span>
-        <span class="q-counter q-fraction" id="q-frac">1 / 25</span>
-      </div>
-      <p class="q-text" id="q-text"></p>
-      <div class="options" id="opts"></div>
-      <div class="feedback" id="feedback"></div>
-      <div class="btn-row">
-        <button class="btn-next" id="btn-next">Siguiente</button>
-      </div>
+    <div id="quiz">
+        <div class="q-card" id="qcard">
+            <div class="q-meta">
+                <span class="q-badge" id="q-num">Pregunta 1</span>
+                <span class="q-badge" id="q-frac">1 / 25</span>
+            </div>
+            <p class="q-text" id="q-text"></p>
+            <div class="options" id="opts"></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="btn-row">
+                <button class="btn-next" id="btn-next">Siguiente</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="results">
-    <div class="results-card">
-      <div class="res-label">Resultado final</div>
-      <div class="res-score" id="r-pct">—</div>
-      <div class="res-msg" id="r-msg"></div>
-      <div class="res-grid">
-        <div class="res-box blue"><div class="rv" id="r-total">25</div><div class="rl">Total</div></div>
-        <div class="res-box green"><div class="rv" id="r-ok">0</div><div class="rl">Aciertos</div></div>
-        <div class="res-box red"><div class="rv" id="r-err">0</div><div class="rl">Errores</div></div>
-      </div>
-      <button class="btn-restart" onclick="restart()">Repetir test</button>
+    <div id="results">
+        <div class="results-card">
+            <span class="q-badge">Resultados Finales</span>
+            <div class="res-score" id="r-pct">0%</div>
+            <p class="res-msg" id="r-msg"></p>
+            
+            <div class="res-grid">
+                <div class="res-box">
+                    <span class="rv" id="r-total">25</span>
+                    <span class="rl">Total</span>
+                </div>
+                <div class="res-box" style="color: var(--success)">
+                    <span class="rv" id="r-ok">0</span>
+                    <span class="rl">Aciertos</span>
+                </div>
+                <div class="res-box" style="color: var(--error)">
+                    <span class="rv" id="r-err">0</span>
+                    <span class="rl">Errores</span>
+                </div>
+            </div>
+            <button class="btn-restart" onclick="restart()">Reiniciar Test</button>
+        </div>
     </div>
-  </div>
 </main>
 
 <script>
@@ -328,87 +403,92 @@ const L=['A','B','C','D'];
 let cur=0,ok=0,err=0,done=false;
 
 function render(){
-  done=false;
-  const q=QS[cur];
-  document.getElementById('q-num').textContent='PREGUNTA '+(cur+1);
-  document.getElementById('q-frac').textContent=(cur+1)+' / '+QS.length;
-  document.getElementById('q-text').textContent=q.q;
-  const c=document.getElementById('opts');
-  c.innerHTML='';
-  q.o.forEach((t,i)=>{
-    const b=document.createElement('button');
-    b.className='opt';
-    b.innerHTML=`<span class="opt-letter">${L[i]}</span><span class="opt-text">${t}</span>`;
-    b.onclick=()=>pick(i);
-    c.appendChild(b);
-  });
-  const fb=document.getElementById('feedback');
-  fb.className='feedback';fb.textContent='';
-  const bn=document.getElementById('btn-next');
-  bn.className='btn-next';
-  bn.textContent=cur===QS.length-1?'Ver resultado':'Siguiente';
-  sync();
+    done=false;
+    const q=QS[cur];
+    document.getElementById('q-num').textContent='Pregunta '+(cur+1);
+    document.getElementById('q-frac').textContent=(cur+1)+' / '+QS.length;
+    document.getElementById('q-text').textContent=q.q;
+    const c=document.getElementById('opts');
+    c.innerHTML='';
+    q.o.forEach((t,i)=>{
+        const b=document.createElement('button');
+        b.className='opt';
+        b.innerHTML=`<span class="opt-letter">${L[i]}</span><span class="opt-text">${t}</span>`;
+        b.onclick=()=>pick(i);
+        c.appendChild(b);
+    });
+    const fb=document.getElementById('feedback');
+    fb.className='feedback';fb.textContent='';
+    const bn=document.getElementById('btn-next');
+    bn.className='btn-next';
+    bn.textContent=cur===QS.length-1?'Ver Resultados':'Continuar';
+    sync();
 }
 
 function pick(i){
-  if(done)return;
-  done=true;
-  const q=QS[cur];
-  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
-  const fb=document.getElementById('feedback');
-  if(i===q.a){
-    document.querySelectorAll('.opt')[i].classList.add('correct');
-    fb.className='feedback ok show';
-    fb.textContent='Respuesta correcta';
-    ok++;
-  } else {
-    document.querySelectorAll('.opt')[i].classList.add('wrong');
-    document.querySelectorAll('.opt')[q.a].classList.add('show-correct');
-    fb.className='feedback err show';
-    fb.textContent='Incorrecto — la respuesta correcta era '+L[q.a];
-    err++;
-  }
-  document.getElementById('btn-next').className='btn-next show';
-  sync();
+    if(done)return;
+    done=true;
+    const q=QS[cur];
+    const opts = document.querySelectorAll('.opt');
+    opts.forEach(b=>b.disabled=true);
+    const fb=document.getElementById('feedback');
+    
+    if(i===q.a){
+        opts[i].classList.add('correct');
+        fb.className='feedback ok show';
+        fb.textContent='¡Correcto!';
+        ok++;
+    } else {
+        opts[i].classList.add('wrong');
+        opts[q.a].classList.add('show-correct');
+        fb.className='feedback err show';
+        fb.textContent='Incorrecto. La respuesta correcta era la '+L[q.a];
+        err++;
+    }
+    document.getElementById('btn-next').className='btn-next show';
+    sync();
 }
 
 function sync(){
-  document.getElementById('c-q').textContent=cur;
-  document.getElementById('c-ok').textContent=ok;
-  document.getElementById('c-err').textContent=err;
-  document.getElementById('prog').style.width=(cur/QS.length*100)+'%';
+    document.getElementById('c-q').textContent=cur;
+    document.getElementById('c-ok').textContent=ok;
+    document.getElementById('c-err').textContent=err;
+    document.getElementById('prog').style.width=(cur/QS.length*100)+'%';
 }
 
 function next(){
-  cur++;
-  if(cur>=QS.length){finish();return;}
-  render();
+    cur++;
+    if(cur>=QS.length){finish();return;}
+    render();
 }
 
 function finish(){
-  document.getElementById('quiz').classList.add('hidden');
-  const rs=document.getElementById('results');
-  rs.classList.add('show');
-  const pct=Math.round(ok/QS.length*100);
-  const el=document.getElementById('r-pct');
-  el.textContent=pct+'%';
-  el.style.color=pct>=80?'#34d07a':pct>=60?'#f59e0b':'#f26c67';
-  document.getElementById('r-ok').textContent=ok;
-  document.getElementById('r-err').textContent=err;
-  document.getElementById('r-total').textContent=QS.length;
-  document.getElementById('r-msg').textContent=
-    pct>=80?'Excelente dominio de UCI y emergencias':
-    pct>=60?'Buen resultado — repasa los temas fallados.':
-    'Sigue practicando, vas por buen camino.';
-  document.getElementById('c-q').textContent=QS.length;
-  document.getElementById('prog').style.width='100%';
+    document.getElementById('quiz').classList.add('hidden');
+    const rs=document.getElementById('results');
+    rs.classList.add('show');
+    const pct=Math.round(ok/QS.length*100);
+    const el=document.getElementById('r-pct');
+    el.textContent=pct+'%';
+    
+    if(pct>=80) el.style.color='var(--success)';
+    else if(pct>=60) el.style.color='#f59e0b';
+    else el.style.color='var(--error)';
+
+    document.getElementById('r-ok').textContent=ok;
+    document.getElementById('r-err').textContent=err;
+    document.getElementById('r-total').textContent=QS.length;
+    document.getElementById('r-msg').textContent=
+        pct>=80?'Dominio experto en UCI y emergencias.':'Sigue practicando para mejorar tus protocolos.';
+    
+    document.getElementById('c-q').textContent=QS.length;
+    document.getElementById('prog').style.width='100%';
 }
 
 function restart(){
-  cur=0;ok=0;err=0;done=false;
-  document.getElementById('results').classList.remove('show');
-  document.getElementById('quiz').classList.remove('hidden');
-  render();
+    cur=0;ok=0;err=0;done=false;
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('quiz').classList.remove('hidden');
+    render();
 }
 
 document.getElementById('btn-next').onclick=next;
