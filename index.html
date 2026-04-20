@@ -4,624 +4,415 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Test UCI & Emergencias</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --bg2: #141720;
-    --bg3: #1c2030;
-    --border: #2a2f3e;
-    --border2: #3a4056;
-    --text: #e8eaf0;
-    --text2: #8b90a8;
-    --text3: #5a5f78;
-    --accent: #4f8ef7;
-    --accent2: #2563c8;
-    --success: #22c55e;
-    --success-bg: #0f2b1a;
-    --danger: #f4605a;
-    --danger-bg: #2b0f0f;
-    --warning: #f59e0b;
-    --radius: 10px;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    padding: 0;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo {
-    font-size: 13px;
-    font-family: var(--mono);
-    color: var(--text3);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .logo span { color: var(--accent); }
+body {
+  background: #111318;
+  color: #e2e4ec;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
 
-  .counters {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .counter-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 5px 14px;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
-  .counter-pill .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-  }
-  .counter-pill .val { font-size: 14px; font-weight: 600; }
-  .pill-total .dot { background: var(--accent); }
-  .pill-total .val { color: var(--accent); }
-  .pill-ok .dot { background: var(--success); }
-  .pill-ok .val { color: var(--success); }
-  .pill-err .dot { background: var(--danger); }
-  .pill-err .val { color: var(--danger); }
+header {
+  background: #181b24;
+  border-bottom: 1px solid #252836;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
 
-  main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+.header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7094;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
 
-  .progress-bar-wrap {
-    background: var(--bg3);
-    border-radius: 999px;
-    height: 4px;
-    margin-bottom: 2.5rem;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
+.stats-row {
+  display: flex;
+  gap: 6px;
+}
 
-  .question-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.3s ease;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
 
-  .q-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .q-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text3);
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 10px;
-    white-space: nowrap;
-    margin-top: 2px;
-    flex-shrink: 0;
-  }
-  .q-text {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--text);
-  }
+.badge-q   { background: #1e2130; color: #7b82ab; border: 1px solid #2a2f42; }
+.badge-ok  { background: #0e2318; color: #34d07a; border: 1px solid #1a3d2a; }
+.badge-err { background: #22110f; color: #f26c67; border: 1px solid #3d1e1c; }
 
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .option {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    text-align: left;
-    width: 100%;
-  }
-  .option:hover:not(:disabled) {
-    border-color: var(--border2);
-    background: #222639;
-  }
-  .opt-letter {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text3);
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px 8px;
-    flex-shrink: 0;
-    margin-top: 1px;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-  }
-  .opt-text {
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--text2);
-    transition: color 0.15s;
-  }
+.progress-track { height: 3px; background: #1e2130; }
+.progress-fill {
+  height: 3px;
+  background: #4f7df5;
+  transition: width .4s ease;
+  width: 0%;
+}
 
-  .option.correct {
-    border-color: var(--success);
-    background: var(--success-bg);
-  }
-  .option.correct .opt-letter {
-    background: var(--success);
-    color: #0d0f14;
-    border-color: var(--success);
-  }
-  .option.correct .opt-text { color: var(--success); }
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
 
-  .option.wrong {
-    border-color: var(--danger);
-    background: var(--danger-bg);
-  }
-  .option.wrong .opt-letter {
-    background: var(--danger);
-    color: #0d0f14;
-    border-color: var(--danger);
-  }
-  .option.wrong .opt-text { color: var(--danger); }
+.q-card {
+  background: #181b24;
+  border: 1px solid #252836;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  animation: rise .25s ease;
+}
+@keyframes rise {
+  from { opacity:0; transform: translateY(10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
 
-  .option.revealed {
-    border-color: var(--success);
-    background: var(--success-bg);
-    opacity: 0.6;
-  }
-  .option.revealed .opt-letter {
-    background: var(--success);
-    color: #0d0f14;
-    border-color: var(--success);
-  }
-  .option.revealed .opt-text { color: var(--success); }
+.q-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.q-counter { font-size: 12px; font-weight: 600; color: #4f7df5; letter-spacing: .5px; }
+.q-fraction { color: #3d4460; }
 
-  .option:disabled { cursor: default; }
+.q-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+  color: #dde0f0;
+  margin-bottom: 22px;
+}
 
-  .feedback-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-top: 14px;
-    font-size: 13px;
-    font-family: var(--mono);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .feedback-bar.show { opacity: 1; }
-  .feedback-bar.ok { background: var(--success-bg); border: 1px solid var(--success); color: var(--success); }
-  .feedback-bar.fail { background: var(--danger-bg); border: 1px solid var(--danger); color: var(--danger); }
+.options { display: flex; flex-direction: column; gap: 8px; }
 
-  .nav-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 14px;
-  }
-  .btn-next {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 10px 24px;
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    display: none;
-  }
-  .btn-next:hover { background: var(--accent2); }
-  .btn-next:active { transform: scale(0.97); }
-  .btn-next.visible { display: block; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #1c1f2c;
+  border: 1px solid #252836;
+  border-radius: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background .12s, border-color .12s;
+}
+.opt:hover:not(:disabled) {
+  background: #222638;
+  border-color: #323759;
+}
 
-  /* Results screen */
-  #results-screen { display: none; }
-  #results-screen.show { display: block; animation: fadeUp 0.4s ease; }
-  .results-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 3rem 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  .results-big {
-    font-size: 64px;
-    font-weight: 700;
-    font-family: var(--mono);
-    margin: 0.5rem 0;
-    line-height: 1;
-  }
-  .results-label { font-size: 13px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2rem; }
-  .results-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    max-width: 320px;
-    margin: 0 auto 2rem;
-  }
-  .res-stat {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    text-align: center;
-  }
-  .res-stat .res-val { font-family: var(--mono); font-size: 28px; font-weight: 600; margin-bottom: 4px; }
-  .res-stat .res-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-  .res-stat.ok .res-val { color: var(--success); }
-  .res-stat.fail .res-val { color: var(--danger); }
-  .btn-restart {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 12px 32px;
-    font-family: var(--sans);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-restart:hover { background: var(--accent2); }
+.opt-letter {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: #252836;
+  border: 1px solid #32374d;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b70a0;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .12s;
+}
+.opt-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #9094b8;
+  padding-top: 3px;
+}
 
-  #quiz-screen.hide { display: none; }
+.opt.correct { background: #0c2018; border-color: #25a05a; }
+.opt.correct .opt-letter { background: #25a05a; border-color: #25a05a; color: #fff; }
+.opt.correct .opt-text { color: #4cd98a; }
+
+.opt.wrong { background: #200d0c; border-color: #c0403b; }
+.opt.wrong .opt-letter { background: #c0403b; border-color: #c0403b; color: #fff; }
+.opt.wrong .opt-text { color: #f07b78; }
+
+.opt.show-correct { background: #0c2018; border-color: #25a05a; opacity: .65; }
+.opt.show-correct .opt-letter { background: #25a05a; border-color: #25a05a; color: #fff; }
+.opt.show-correct .opt-text { color: #4cd98a; }
+
+.feedback {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  display: none;
+}
+.feedback.show { display: block; }
+.feedback.ok  { background: #0c2018; border: 1px solid #1e6640; color: #3ec97a; }
+.feedback.err { background: #200d0c; border: 1px solid #6b2320; color: #e87774; }
+
+.btn-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+
+.btn-next {
+  background: #4f7df5;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 22px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none;
+  transition: background .15s, transform .1s;
+}
+.btn-next.show { display: block; }
+.btn-next:hover { background: #3b68dc; }
+.btn-next:active { transform: scale(.97); }
+
+#results { display: none; }
+#results.show { display: block; animation: rise .3s ease; }
+
+.results-card {
+  background: #181b24;
+  border: 1px solid #252836;
+  border-radius: 20px;
+  padding: 48px 32px 40px;
+  text-align: center;
+}
+
+.res-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #3d4460;
+  margin-bottom: 12px;
+}
+.res-score {
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.res-msg {
+  font-size: 14px;
+  color: #6b7094;
+  margin-bottom: 36px;
+}
+
+.res-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  max-width: 380px;
+  margin: 0 auto 36px;
+}
+.res-box {
+  background: #1c1f2c;
+  border: 1px solid #252836;
+  border-radius: 10px;
+  padding: 16px 12px;
+}
+.res-box .rv { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.res-box .rl { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #4a4f6e; }
+.res-box.blue .rv { color: #4f7df5; }
+.res-box.green .rv { color: #34d07a; }
+.res-box.red .rv { color: #f26c67; }
+
+.btn-restart {
+  background: #4f7df5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 36px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-restart:hover { background: #3b68dc; }
+
+#quiz.hidden { display: none; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">UCI & Emergencias <span>·</span> Test</div>
-  <div class="counters">
-    <div class="counter-pill pill-total">
-      <div class="dot"></div>
-      <span style="color:var(--text3);font-size:11px;">Q</span>
-      <span class="val" id="cnt-total">0</span><span style="color:var(--text3)">/25</span>
+  <span class="header-title">UCI &amp; Emergencias</span>
+  <div class="stats-row">
+    <div class="stat-badge badge-q">
+      <span id="c-q">0</span><span style="color:#3d4460">/25</span>
     </div>
-    <div class="counter-pill pill-ok">
-      <div class="dot"></div>
-      <span class="val" id="cnt-ok">0</span>
-    </div>
-    <div class="counter-pill pill-err">
-      <div class="dot"></div>
-      <span class="val" id="cnt-err">0</span>
-    </div>
+    <div class="stat-badge badge-ok">&#10003; <span id="c-ok">0</span></div>
+    <div class="stat-badge badge-err">&#10007; <span id="c-err">0</span></div>
   </div>
 </header>
 
-<main>
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress-fill"></div>
-  </div>
+<div class="progress-track">
+  <div class="progress-fill" id="prog"></div>
+</div>
 
-  <div id="quiz-screen">
-    <div class="question-card" id="question-card">
-      <div class="q-header">
-        <span class="q-num" id="q-num">01 / 25</span>
-        <p class="q-text" id="q-text"></p>
+<main>
+  <div id="quiz">
+    <div class="q-card" id="qcard">
+      <div class="q-meta">
+        <span class="q-counter" id="q-num">PREGUNTA 1</span>
+        <span class="q-counter q-fraction" id="q-frac">1 / 25</span>
       </div>
-      <div class="options" id="options-container"></div>
-      <div class="feedback-bar" id="feedback-bar"></div>
-      <div class="nav-row">
-        <button class="btn-next" id="btn-next">Siguiente →</button>
+      <p class="q-text" id="q-text"></p>
+      <div class="options" id="opts"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="btn-row">
+        <button class="btn-next" id="btn-next">Siguiente</button>
       </div>
     </div>
   </div>
 
-  <div id="results-screen">
+  <div id="results">
     <div class="results-card">
-      <div class="results-label">Resultado final</div>
-      <div class="results-big" id="res-pct" style="color: var(--accent)">0%</div>
-      <div style="color:var(--text3);font-size:13px;margin-bottom:2rem;" id="res-msg"></div>
-      <div class="results-grid">
-        <div class="res-stat ok">
-          <div class="res-val" id="res-ok">0</div>
-          <div class="res-lbl">Aciertos</div>
-        </div>
-        <div class="res-stat fail">
-          <div class="res-val" id="res-err">0</div>
-          <div class="res-lbl">Errores</div>
-        </div>
+      <div class="res-label">Resultado final</div>
+      <div class="res-score" id="r-pct">—</div>
+      <div class="res-msg" id="r-msg"></div>
+      <div class="res-grid">
+        <div class="res-box blue"><div class="rv" id="r-total">25</div><div class="rl">Total</div></div>
+        <div class="res-box green"><div class="rv" id="r-ok">0</div><div class="rl">Aciertos</div></div>
+        <div class="res-box red"><div class="rv" id="r-err">0</div><div class="rl">Errores</div></div>
       </div>
-      <button class="btn-restart" onclick="restart()">Reiniciar test</button>
+      <button class="btn-restart" onclick="restart()">Repetir test</button>
     </div>
   </div>
 </main>
 
 <script>
-const questions = [
-  {
-    q: "¿Cuál de las siguientes medidas debe ser prioritaria ante un paciente en situación de edema agudo de pulmón?",
-    opts: ["Cloruro mórfico", "Sedestación", "Diuréticos", "Oxigenoterapia"],
-    ans: 3
-  },
-  {
-    q: "Paciente en MI que lleva cinco días con un catéter venoso central en la cena subclavia y presenta dolor torácico agudo en el cuello que empeora con la tos, disnea, taquipnea y palpitaciones. ¿Qué patología podría ser?",
-    opts: ["Insuficiencia renal", "Taponamiento cardíaco", "EPOC", "Síncope"],
-    ans: 1
-  },
-  {
-    q: "¿A qué valores de tensión arterial se da la crisis hipertensiva?",
-    opts: ["> 130 mmHg de PAD", "> 130 mmHg de PAS", "130 mmHg de PAS", "130 mmHg de PAD"],
-    ans: 0
-  },
-  {
-    q: "¿Qué manifestaciones clínicas puede acompañar a una crisis hipertensiva?",
-    opts: ["Alteración del nivel de conciencia", "Shock hipovolémico", "Hematuria", "Todas son correctas"],
-    ans: 3
-  },
-  {
-    q: "Cuando un paciente con TCE localiza el dolor, tiene palabras inapropiadas y abre los ojos al dolor, decimos que tiene una GCS de:",
-    opts: ["10", "12", "14", "15"],
-    ans: 0
-  },
-  {
-    q: "Ante sospecha de edema agudo de pulmón, ¿qué debemos hacer para orientar el tratamiento de rescate?",
-    opts: ["Tomar TA", "Saturación de O₂ para la administración correcta de O₂", "Sondaje vesical y medir la diuresis para realizar un balance hídrico", "Todas son correctas"],
-    ans: 3
-  },
-  {
-    q: "Un paciente con sospecha de edema agudo de pulmón con SatO₂ 94%, TAS 80 mmHg y glucemia 150 mg/dl. ¿Qué tratamiento está indicado?",
-    opts: ["Dobutamina 5 mcg/kg/min", "Dobutamina 10 mcg/kg/min", "Captopril 25 mg", "Cloruro mórfico"],
-    ans: 0
-  },
-  {
-    q: "La diferenciación entre HDA-HDB es:",
-    opts: ["Forma de presentación", "Según la hemorragia se extiende estómago o ano respectivamente", "Según se origine por encima o debajo del ángulo de Treitz", "Todas son correctas"],
-    ans: 2
-  },
-  {
-    q: "La posición de cabecero a 60º para mejorar la expansión pulmonar y disminuir la precarga es útil en:",
-    opts: ["TEP", "EAP", "TC", "Todas son correctas"],
-    ans: 1
-  },
-  {
-    q: "¿Dónde se origina la mayor parte del TEP?",
-    opts: ["Directamente en la aurícula derecha", "Venas pélvicas", "Sistema venoso profundo de miembros inferiores", "In situ en territorio pulmonar"],
-    ans: 2
-  },
-  {
-    q: "Para la sedación del paciente con TCE en UCI, ¿qué se debe usar prioritariamente?",
-    opts: ["Diazepam", "Barbitúricos", "Midazolam", "Todos son correctos"],
-    ans: 1
-  },
-  {
-    q: "¿Qué patología está relacionada con la emergencia hipertensiva?",
-    opts: ["Insuficiencia renal aguda", "Cetoacidosis metabólica", "TCE", "Ninguna"],
-    ans: 0
-  },
-  {
-    q: "¿Qué posible patología presenta un paciente con hipoperfusión tisular como resultado de un fallo en la bomba cardíaca?",
-    opts: ["Shock cardiogénico", "Shock distributivo", "Shock obstructivo", "Shock hipovolémico"],
-    ans: 0
-  },
-  {
-    q: "¿Qué derivación se encuentra entre aVL y aVF?",
-    opts: ["I", "II", "III", "IV"],
-    ans: 2
-  },
-  {
-    q: "El electrodo que corresponde a la derivación V4 se localiza en:",
-    opts: ["Línea medioclavicular a nivel del 5.º espacio intercostal izquierdo", "Línea paraesternal a nivel del espacio intercostal izquierdo", "Línea axilar media a nivel del espacio intercostal izquierdo", "Línea medioclavicular a nivel del espacio intercostal derecho"],
-    ans: 0
-  },
-  {
-    q: "En un TCE con una TAM de 80 mmHg, ¿qué tratamiento estaría indicado?",
-    opts: ["Dopamina 0,5 mcg", "Dopamina 7 mcg", "Dobutamina 7 mcg", "Todas son correctas"],
-    ans: 1
-  },
-  {
-    q: "Para aumentar la diuresis con una droga vasoactiva, ¿qué puede administrar?",
-    opts: ["Dopamina hasta 0,5 microgotas", "Dopamina entre 0,5–10 microgotas", "Furosemida", "Dobutamina"],
-    ans: 1
-  },
-  {
-    q: "Ante un paciente con cetoacidosis diabética, ¿qué clínica nos podemos encontrar?",
-    opts: ["Acidosis metabólica con bicarbonato < 20 mEq", "Acidosis metabólica con bicarbonato > 30 mEq", "Acidosis respiratoria con CO₂ > 45", "Alcalosis metabólica con bicarbonato < 20 mEq"],
-    ans: 0
-  },
-  {
-    q: "El Sr. Ramírez ingresa en UCI con diagnóstico de taponamiento cardíaco. Tras gasometría se obtiene acidosis metabólica. ¿Qué modificación aparecería para compensarlo?",
-    opts: ["Aumenta la diuresis", "Hiperventilación", "Disminuye el GC", "Todas son correctas"],
-    ans: 1
-  },
-  {
-    q: "¿Cuál es la medida básica para tratar el taponamiento cardíaco?",
-    opts: ["Toracotomía", "Oxigenoterapia", "Pericardiocentesis", "Paracentesis"],
-    ans: 2
-  },
-  {
-    q: "En cuanto a la fisiopatología de la cetoacidosis diabética, señala la afirmación correcta:",
-    opts: [
-      "El glicerol es el principal sustrato del proceso de cetogénesis oxidativa",
-      "Existe una disminución de la filtración glomerular",
-      "La lipólisis de triglicéridos da como resultado una producción de ácidos grasos libres",
-      "Todas las afirmaciones anteriores son incorrectas"
-    ],
-    ans: 2
-  },
-  {
-    q: "¿Qué complicación puede aparecer en una emergencia por cetoacidosis diabética?",
-    opts: ["Hiperventilación", "EAP", "Shock cardiogénico", "Todas son correctas"],
-    ans: 3
-  },
-  {
-    q: "¿Qué fármaco se utiliza de 1.ª elección en el shock cardiogénico?",
-    opts: [
-      "Noradrenalina con el fin de disminuir el gasto cardíaco, aunque puede causar vasodilatación periférica",
-      "Los diuréticos con el fin de controlar la PVC, aunque puede causar vasodilatación local",
-      "Dobutamina con el fin de incrementar el GC, aunque puede causar vasodilatación periférica",
-      "Dobutamina con el fin de incrementar el GC, aunque puede causar vasodilatación central"
-    ],
-    ans: 2
-  },
-  {
-    q: "¿Cuáles son las manifestaciones propias del shock cardiogénico?",
-    opts: ["PA alta, PVC baja", "PA alta, PVC alta", "PA baja, PVC baja", "PA baja, PVC alta"],
-    ans: 3
-  },
-  {
-    q: "En el ECG, aVF negativo y derivación I positiva podría significar:",
-    opts: ["Insuficiencia cardíaca derecha", "Eje izquierdo (hemibloqueo anterior izquierdo)", "Hipertrofia ventricular derecha", "Eje normal"],
-    ans: 1
-  }
+const QS=[
+  {q:"¿Cuál de las siguientes medidas debe ser prioritaria ante un paciente en situación de edema agudo de pulmón?",o:["Cloruro mórfico","Sedestación","Diuréticos","Oxigenoterapia"],a:3},
+  {q:"Paciente en MI con CVC en subclavia (5 días): dolor torácico agudo en cuello que empeora con la tos, disnea, taquipnea y palpitaciones. ¿Qué patología podría ser?",o:["Insuficiencia renal","Taponamiento cardíaco","EPOC","Síncope"],a:1},
+  {q:"¿A qué valores de tensión arterial se considera crisis hipertensiva?",o:["> 130 mmHg de PAD","> 130 mmHg de PAS","130 mmHg de PAS","130 mmHg de PAD"],a:0},
+  {q:"¿Qué manifestaciones clínicas puede acompañar a una crisis hipertensiva?",o:["Alteración del nivel de conciencia","Shock hipovolémico","Hematuria","Todas son correctas"],a:3},
+  {q:"Paciente con TCE: localiza el dolor, palabras inapropiadas y abre los ojos al dolor. ¿Qué GCS tiene?",o:["10","12","14","15"],a:0},
+  {q:"Ante sospecha de EAP, ¿qué debemos hacer para orientar el tratamiento de rescate?",o:["Tomar TA","SatO₂ para la administración correcta de O₂","Sondaje vesical y balance hídrico","Todas son correctas"],a:3},
+  {q:"Paciente con sospecha de EAP: SatO₂ 94 %, TAS 80 mmHg, glucemia 150 mg/dl. ¿Qué tratamiento está indicado?",o:["Dobutamina 5 mcg/kg/min","Dobutamina 10 mcg/kg/min","Captopril 25 mg","Cloruro mórfico"],a:0},
+  {q:"La diferenciación entre HDA y HDB se basa en:",o:["Forma de presentación","Según la hemorragia se extiende a estómago o ano","Según se origine por encima o debajo del ángulo de Treitz","Todas son correctas"],a:2},
+  {q:"La posición de cabecero a 60° para mejorar la expansión pulmonar y disminuir la precarga es útil en:",o:["TEP","EAP","TC","Todas son correctas"],a:1},
+  {q:"¿Dónde se origina la mayor parte del TEP?",o:["Directamente en la aurícula derecha","Venas pélvicas","Sistema venoso profundo de MMII","In situ en territorio pulmonar"],a:2},
+  {q:"Para la sedación del paciente con TCE en UCI, ¿qué se debe usar prioritariamente?",o:["Diazepam","Barbitúricos","Midazolam","Todos son correctos"],a:1},
+  {q:"¿Qué patología está relacionada con la emergencia hipertensiva?",o:["Insuficiencia renal aguda","Cetoacidosis metabólica","TCE","Ninguna"],a:0},
+  {q:"¿Qué patología presenta un paciente con hipoperfusión tisular por fallo en la bomba cardíaca?",o:["Shock cardiogénico","Shock distributivo","Shock obstructivo","Shock hipovolémico"],a:0},
+  {q:"¿Qué derivación se encuentra entre aVL y aVF?",o:["I","II","III","IV"],a:2},
+  {q:"El electrodo de V4 se localiza en:",o:["Línea medioclavicular, 5.º espacio intercostal izquierdo","Línea paraesternal, espacio intercostal izquierdo","Línea axilar media, espacio intercostal izquierdo","Línea medioclavicular, espacio intercostal derecho"],a:0},
+  {q:"En un TCE con TAM de 80 mmHg, ¿qué tratamiento estaría indicado?",o:["Dopamina 0,5 mcg","Dopamina 7 mcg","Dobutamina 7 mcg","Todas son correctas"],a:1},
+  {q:"Para aumentar la diuresis con una droga vasoactiva, ¿qué puede administrar?",o:["Dopamina hasta 0,5 microgotas","Dopamina entre 0,5–10 microgotas","Furosemida","Dobutamina"],a:1},
+  {q:"Ante cetoacidosis diabética, ¿qué clínica nos podemos encontrar?",o:["Acidosis metabólica con HCO₃ < 20 mEq","Acidosis metabólica con HCO₃ > 30 mEq","Acidosis respiratoria con CO₂ > 45","Alcalosis metabólica con HCO₃ < 20 mEq"],a:0},
+  {q:"Paciente en UCI con taponamiento cardíaco y acidosis metabólica. ¿Qué modificación compensatoria aparecería?",o:["Aumenta la diuresis","Hiperventilación","Disminuye el GC","Todas son correctas"],a:1},
+  {q:"¿Cuál es la medida básica para tratar el taponamiento cardíaco?",o:["Toracotomía","Oxigenoterapia","Pericardiocentesis","Paracentesis"],a:2},
+  {q:"En la fisiopatología de la cetoacidosis diabética, ¿cuál es la afirmación correcta?",o:["El glicerol es el principal sustrato de la cetogénesis oxidativa","Existe disminución de la filtración glomerular","La lipólisis de triglicéridos produce ácidos grasos libres","Todas las afirmaciones son incorrectas"],a:2},
+  {q:"¿Qué complicación puede aparecer en una emergencia por cetoacidosis diabética?",o:["Hiperventilación","EAP","Shock cardiogénico","Todas son correctas"],a:3},
+  {q:"Fármaco de 1.ª elección en el shock cardiogénico:",o:["Noradrenalina — disminuye el GC, puede causar vasodilatación periférica","Diuréticos — controlan la PVC, pueden causar vasodilatación local","Dobutamina — incrementa el GC, puede causar vasodilatación periférica","Dobutamina — incrementa el GC, puede causar vasodilatación central"],a:2},
+  {q:"Manifestaciones propias del shock cardiogénico:",o:["PA alta, PVC baja","PA alta, PVC alta","PA baja, PVC baja","PA baja, PVC alta"],a:3},
+  {q:"En el ECG, aVF negativo y derivación I positiva podría significar:",o:["Insuficiencia cardíaca derecha","Eje izquierdo (hemibloqueo anterior izquierdo)","Hipertrofia ventricular derecha","Eje normal"],a:1}
 ];
 
-let current = 0;
-let okCount = 0;
-let errCount = 0;
-let answered = false;
-const LETTERS = ['A', 'B', 'C', 'D'];
+const L=['A','B','C','D'];
+let cur=0,ok=0,err=0,done=false;
 
-function updateCounters() {
-  document.getElementById('cnt-total').textContent = current;
-  document.getElementById('cnt-ok').textContent = okCount;
-  document.getElementById('cnt-err').textContent = errCount;
-  const pct = questions.length > 0 ? (current / questions.length) * 100 : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-}
-
-function loadQuestion() {
-  answered = false;
-  const q = questions[current];
-  const n = current + 1;
-  document.getElementById('q-num').textContent = String(n).padStart(2,'0') + ' / ' + questions.length;
-  document.getElementById('q-text').textContent = q.q;
-
-  const container = document.getElementById('options-container');
-  container.innerHTML = '';
-  q.opts.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.innerHTML = `<span class="opt-letter">${LETTERS[i]}</span><span class="opt-text">${opt}</span>`;
-    btn.onclick = () => selectOption(i);
-    container.appendChild(btn);
+function render(){
+  done=false;
+  const q=QS[cur];
+  document.getElementById('q-num').textContent='PREGUNTA '+(cur+1);
+  document.getElementById('q-frac').textContent=(cur+1)+' / '+QS.length;
+  document.getElementById('q-text').textContent=q.q;
+  const c=document.getElementById('opts');
+  c.innerHTML='';
+  q.o.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=`<span class="opt-letter">${L[i]}</span><span class="opt-text">${t}</span>`;
+    b.onclick=()=>pick(i);
+    c.appendChild(b);
   });
-
-  const fb = document.getElementById('feedback-bar');
-  fb.className = 'feedback-bar';
-  fb.textContent = '';
-
-  const btnNext = document.getElementById('btn-next');
-  btnNext.classList.remove('visible');
-  if (current === questions.length - 1) {
-    btnNext.textContent = 'Ver resultado';
-  } else {
-    btnNext.textContent = 'Siguiente →';
-  }
-  updateCounters();
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';fb.textContent='';
+  const bn=document.getElementById('btn-next');
+  bn.className='btn-next';
+  bn.textContent=cur===QS.length-1?'Ver resultado':'Siguiente';
+  sync();
 }
 
-function selectOption(selected) {
-  if (answered) return;
-  answered = true;
-
-  const q = questions[current];
-  const buttons = document.querySelectorAll('.option');
-  buttons.forEach(btn => btn.disabled = true);
-
-  const fb = document.getElementById('feedback-bar');
-  if (selected === q.ans) {
-    buttons[selected].classList.add('correct');
-    fb.className = 'feedback-bar ok show';
-    fb.textContent = '✓ Correcto';
-    okCount++;
+function pick(i){
+  if(done)return;
+  done=true;
+  const q=QS[cur];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('feedback');
+  if(i===q.a){
+    document.querySelectorAll('.opt')[i].classList.add('correct');
+    fb.className='feedback ok show';
+    fb.textContent='Respuesta correcta';
+    ok++;
   } else {
-    buttons[selected].classList.add('wrong');
-    buttons[q.ans].classList.add('revealed');
-    fb.className = 'feedback-bar fail show';
-    fb.textContent = '✗ Incorrecto — la correcta es ' + LETTERS[q.ans];
-    errCount++;
+    document.querySelectorAll('.opt')[i].classList.add('wrong');
+    document.querySelectorAll('.opt')[q.a].classList.add('show-correct');
+    fb.className='feedback err show';
+    fb.textContent='Incorrecto — la respuesta correcta era '+L[q.a];
+    err++;
   }
-
-  document.getElementById('btn-next').classList.add('visible');
-  updateCounters();
+  document.getElementById('btn-next').className='btn-next show';
+  sync();
 }
 
-function nextQuestion() {
-  current++;
-  if (current >= questions.length) {
-    showResults();
-  } else {
-    loadQuestion();
-  }
+function sync(){
+  document.getElementById('c-q').textContent=cur;
+  document.getElementById('c-ok').textContent=ok;
+  document.getElementById('c-err').textContent=err;
+  document.getElementById('prog').style.width=(cur/QS.length*100)+'%';
 }
 
-function showResults() {
-  document.getElementById('quiz-screen').classList.add('hide');
-  const rs = document.getElementById('results-screen');
+function next(){
+  cur++;
+  if(cur>=QS.length){finish();return;}
+  render();
+}
+
+function finish(){
+  document.getElementById('quiz').classList.add('hidden');
+  const rs=document.getElementById('results');
   rs.classList.add('show');
-
-  const pct = Math.round((okCount / questions.length) * 100);
-  document.getElementById('res-pct').textContent = pct + '%';
-  document.getElementById('res-ok').textContent = okCount;
-  document.getElementById('res-err').textContent = errCount;
-
-  let msg = '';
-  if (pct >= 80) msg = '¡Excelente dominio de UCI y emergencias!';
-  else if (pct >= 60) msg = 'Buen resultado. Repasa los temas fallados.';
-  else msg = 'Sigue practicando — vas a mejorar.';
-  document.getElementById('res-msg').textContent = msg;
-
-  const pctEl = document.getElementById('res-pct');
-  if (pct >= 80) pctEl.style.color = 'var(--success)';
-  else if (pct >= 60) pctEl.style.color = 'var(--warning)';
-  else pctEl.style.color = 'var(--danger)';
-
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('cnt-total').textContent = questions.length;
-  document.getElementById('cnt-ok').textContent = okCount;
-  document.getElementById('cnt-err').textContent = errCount;
+  const pct=Math.round(ok/QS.length*100);
+  const el=document.getElementById('r-pct');
+  el.textContent=pct+'%';
+  el.style.color=pct>=80?'#34d07a':pct>=60?'#f59e0b':'#f26c67';
+  document.getElementById('r-ok').textContent=ok;
+  document.getElementById('r-err').textContent=err;
+  document.getElementById('r-total').textContent=QS.length;
+  document.getElementById('r-msg').textContent=
+    pct>=80?'Excelente dominio de UCI y emergencias':
+    pct>=60?'Buen resultado — repasa los temas fallados.':
+    'Sigue practicando, vas por buen camino.';
+  document.getElementById('c-q').textContent=QS.length;
+  document.getElementById('prog').style.width='100%';
 }
 
-function restart() {
-  current = 0;
-  okCount = 0;
-  errCount = 0;
-  answered = false;
-  document.getElementById('results-screen').classList.remove('show');
-  document.getElementById('quiz-screen').classList.remove('hide');
-  loadQuestion();
+function restart(){
+  cur=0;ok=0;err=0;done=false;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('quiz').classList.remove('hidden');
+  render();
 }
 
-document.getElementById('btn-next').addEventListener('click', nextQuestion);
-
-loadQuestion();
+document.getElementById('btn-next').onclick=next;
+render();
 </script>
 </body>
 </html>
